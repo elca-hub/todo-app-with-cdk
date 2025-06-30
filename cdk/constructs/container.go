@@ -171,7 +171,7 @@ func NewContainerService(scope constructs.Construct, id string, props *Container
 	this.ECSService = awsecs.NewFargateService(this.Construct, jsii.String("ECSService"), &awsecs.FargateServiceProps{
 		Cluster:        this.ECSCluster,
 		TaskDefinition: this.TaskDefinition,
-		DesiredCount:   jsii.Number(1), // Start with 1 instance for cost optimization
+		DesiredCount:   jsii.Number(2), // 分散システムなので
 		SecurityGroups: &[]awsec2.ISecurityGroup{props.ECSSecurityGroup},
 		VpcSubnets: &awsec2.SubnetSelection{
 			SubnetType: awsec2.SubnetType_PRIVATE_WITH_EGRESS,

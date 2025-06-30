@@ -1,0 +1,9 @@
+ja:
+  activerecord:
+    models:
+      task: タスク
+    attributes:
+      task/status:
+        completed: 完了
+        in_progress: 進行中
+        pending: 保留

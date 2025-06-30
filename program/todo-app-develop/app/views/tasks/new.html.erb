@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Todo App - 新規タスク作成</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    h1 { color: #333; }
+    .new-task { 
+      background-color: #f9f9f9; 
+      padding: 15px; 
+      margin: 20px 0; 
+      border-radius: 5px; 
+      max-width: 600px;
+    }
+    input, textarea { 
+      width: 100%; 
+      padding: 5px; 
+      margin: 5px 0; 
+    }
+    button { 
+      background-color: #007bff; 
+      color: white; 
+      padding: 8px 16px; 
+      border: none; 
+      border-radius: 3px; 
+      cursor: pointer; 
+    }
+    button:hover { background-color: #0056b3; }
+    .btn-secondary { 
+      background-color: #6c757d; 
+      margin-left: 10px; 
+    }
+    .btn-secondary:hover { background-color: #545b62; }
+    a { text-decoration: none; color: white; }
+    .error-messages {
+      background-color: #f8d7da;
+      color: #721c24;
+      padding: 10px;
+      border-radius: 5px;
+      margin: 10px 0;
+    }
+  </style>
+</head>
+<body>
+  <h1>📝 Todo App - 新規タスク作成</h1>
+  
+  <!-- エラーメッセージ表示 -->
+  <% if @task.errors.any? %>
+    <div class="error-messages">
+      <h4><%= pluralize(@task.errors.count, "error") %> prohibited this task from being saved:</h4>
+      <ul>
+        <% @task.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <!-- 新規タスク作成フォーム -->
+  <div class="new-task">
+    <h3>新しいタスクを追加</h3>
+    <%= form_with model: @task, local: true do |form| %>
+      <p>
+        <%= form.label :name, "タスク名:" %>
+        <%= form.text_field :name, placeholder: "例: 買い物に行く" %>
+      </p>
+      
+      <p>
+        <%= form.label :context, "詳細:" %>
+        <%= form.text_area :context, placeholder: "詳細を入力してください", rows: 3 %>
+      </p>
+      
+      <p>
+        <%= form.submit "タスクを追加", class: "button" %>
+        <button type="button" class="btn-secondary">
+          <%= link_to "戻る", tasks_path %>
+        </button>
+      </p>
+    <% end %>
+  </div>
+  
+  <hr style="margin: 30px 0;">
+  <p style="text-align: center; color: #666;">
+    <small>Todo App - 簡単なタスク管理アプリ</small>
+  </p>
+</body>
+</html>

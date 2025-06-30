@@ -1,0 +1,157 @@
+<% content_for :title, "タスク編集 - #{@task.name}" %>
+
+<style>
+  body { font-family: Arial, sans-serif; margin: 20px; }
+  h1 { color: #333; }
+  .form-container { 
+    background-color: #f9f9f9; 
+    padding: 20px; 
+    margin: 20px 0; 
+    border-radius: 5px; 
+    border: 1px solid #ddd;
+  }
+  .form-group { 
+    margin: 15px 0; 
+  }
+  label { 
+    display: block; 
+    margin-bottom: 5px; 
+    font-weight: bold; 
+    color: #555; 
+  }
+  input[type="text"], 
+  input[type="date"], 
+  textarea, 
+  select { 
+    width: 100%; 
+    padding: 10px; 
+    border: 1px solid #ddd; 
+    border-radius: 3px; 
+    font-size: 14px;
+    box-sizing: border-box;
+  }
+  textarea { 
+    height: 100px; 
+    resize: vertical; 
+  }
+  select {
+    height: 40px;
+  }
+  .btn { 
+    padding: 10px 20px; 
+    margin: 5px; 
+    border: none; 
+    border-radius: 5px; 
+    text-decoration: none; 
+    display: inline-block; 
+    color: white; 
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 14px;
+  }
+  .btn-primary { background-color: #007bff; }
+  .btn-success { background-color: #28a745; }
+  .btn-secondary { background-color: #6c757d; }
+  .btn:hover { opacity: 0.8; }
+  .error-messages {
+    background-color: #f8d7da;
+    border: 1px solid #f5c6cb;
+    color: #721c24;
+    padding: 10px;
+    border-radius: 5px;
+    margin: 15px 0;
+  }
+  .error-messages ul {
+    margin: 0;
+    padding-left: 20px;
+  }
+  .current-info {
+    background-color: #e9ecef;
+    padding: 15px;
+    border-radius: 5px;
+    margin: 20px 0;
+    border-left: 4px solid #007bff;
+  }
+</style>
+
+<div style="margin-bottom: 20px;">
+  <%= link_to "← 詳細に戻る", task_path(@task), class: "btn btn-secondary" %>
+  <%= link_to "← 一覧に戻る", tasks_path, class: "btn btn-secondary" %>
+</div>
+
+<h1>📝 タスク編集</h1>
+
+<div class="current-info">
+  <h3>現在のタスク情報</h3>
+  <p><strong>タスク名:</strong> <%= @task.name %></p>
+  <p><strong>ステータス:</strong> <%= @task.human_attribute_enum(:status) %></p>
+  <% if @task.context.present? %>
+    <p><strong>詳細:</strong> <%= truncate(@task.context, length: 100) %></p>
+  <% end %>
+  <p><strong>作成日:</strong> <%= @task.created_at.strftime("%Y年%m月%d日 %H:%M") %></p>
+</div>
+
+<div class="form-container">
+  <%= form_with model: @task, local: true do |form| %>
+    <% if @task.errors.any? %>
+      <div class="error-messages">
+        <h4><%= pluralize(@task.errors.count, "個のエラー") %>があります:</h4>
+        <ul>
+          <% @task.errors.full_messages.each do |message| %>
+            <li><%= message %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+
+    <div class="form-group">
+      <%= form.label :name, "タスク名 *" %>
+      <%= form.text_field :name, placeholder: "例: 買い物に行く", required: true %>
+    </div>
+
+    <div class="form-group">
+      <%= form.label :context, "詳細・メモ" %>
+      <%= form.text_area :context, placeholder: "タスクの詳細や備考を記入してください（任意）" %>
+    </div>
+
+    <div class="form-group">
+      <%= form.label :status, "ステータス *" %>
+      <%= form.select :status, 
+          options_for_select([
+            ['未着手', 'pending'],
+            ['進行中', 'in_progress'], 
+            ['完了', 'completed']
+          ], @task.status), 
+          {}, 
+          { required: true } %>
+    </div>
+
+    <div class="form-group">
+      <%= form.label :deadline, "期限" %>
+      <%= form.date_field :deadline %>
+      <small style="color: #666; display: block; margin-top: 5px;">
+        期限を設定しない場合は空白のままにしてください
+      </small>
+    </div>
+
+    <div style="margin-top: 30px; text-align: center;">
+      <%= form.submit "更新する", class: "btn btn-success" %>
+      <%= link_to "キャンセル", task_path(@task), class: "btn btn-secondary" %>
+    </div>
+  <% end %>
+</div>
+
+<div style="margin-top: 30px; padding: 15px; background-color: #fff3cd; border-radius: 5px; border: 1px solid #ffeaa7;">
+  <h4 style="color: #856404; margin-top: 0;">💡 編集のヒント</h4>
+  <ul style="color: #856404; margin-bottom: 0;">
+    <li>タスク名は必須項目です</li>
+    <li>ステータスを変更することで、タスクの進捗を管理できます</li>
+    <li>期限を設定すると、期限切れの場合に警告が表示されます</li>
+    <li>詳細欄には、タスクに関する追加情報やメモを記入できます</li>
+  </ul>
+</div>
+
+<hr style="margin: 30px 0;">
+<p style="text-align: center; color: #666;">
+  <small>Todo App - タスク編集</small>
+</p>

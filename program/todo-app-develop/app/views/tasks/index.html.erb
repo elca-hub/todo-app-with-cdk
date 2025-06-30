@@ -1,0 +1,119 @@
+<% content_for :title, "Todo App" %>
+
+<style>
+  body { font-family: Arial, sans-serif; margin: 20px; }
+  h1 { color: #333; }
+  .task { 
+    border: 1px solid #ddd; 
+    padding: 10px; 
+    margin: 10px 0; 
+    border-radius: 5px; 
+  }
+  .completed { 
+    background-color: #f0f8f0; 
+    text-decoration: line-through; 
+  }
+  .new-task { 
+    background-color: #f9f9f9; 
+    padding: 15px; 
+    margin: 20px 0; 
+    border-radius: 5px; 
+  }
+  input, textarea { 
+    width: 100%; 
+    padding: 5px; 
+    margin: 5px 0; 
+  }
+  button { 
+    background-color: #007bff; 
+    color: white; 
+    padding: 8px 16px; 
+    border: none; 
+    border-radius: 3px; 
+    cursor: pointer; 
+  }
+  button:hover { background-color: #0056b3; }
+  .btn-edit { background-color: #28a745; }
+  .btn-delete { background-color: #dc3545; }
+  a { text-decoration: none; color: white; }
+</style>
+  <h1>📝 Todo App - タスク一覧</h1>
+  
+  <!-- 新規タスク作成ボタン -->
+  <div class="new-task">
+    <h3>新しいタスクを追加</h3>
+    <p>
+      <%= link_to "新しいタスクを作成", new_task_path, 
+          style: "background-color: #007bff; color: white; padding: 8px 16px; border: none; border-radius: 3px; text-decoration: none; display: inline-block;" %>
+    </p>
+  </div>
+
+  <!-- タスク統計 -->
+  <div style="background-color: #e9ecef; padding: 10px; border-radius: 5px; margin: 20px 0;">
+    <strong>統計:</strong>
+    全タスク: <%= @tasks.count %>個 | 
+    完了: <%= @tasks.select(&:completed?).count %>個 | 
+    未完了: <%= @tasks.reject(&:completed?).count %>個
+  </div>
+
+  <!-- タスク一覧 -->
+  <h2>タスク一覧</h2>
+  
+  <% if @tasks.any? %>
+    <% @tasks.each do |task| %>
+      <div class="task <%= 'completed' if task.completed? %>">
+        <h3>
+          <%= task.completed? ? "✅" : "⏰" %>
+          <%= task.name %>
+        </h3>
+
+        <% if task.context.present? %>
+          <p><strong>詳細:</strong> <%= task.context %></p>
+        <% end %>
+        
+        <p>
+          <small>
+            作成日: <%= task.created_at.strftime("%Y年%m月%d日 %H:%M") %>
+            <% if task.completed? %>
+              | 完了日: <%= task.updated_at.strftime("%Y年%m月%d日 %H:%M") %>
+            <% end %>
+          </small>
+        </p>
+        
+        <div>
+          <!-- ステータス表示 -->
+          <span style="padding: 5px 10px; border-radius: 3px; font-size: 12px; font-weight: bold; 
+                       background-color: <%= task.completed? ? '#d4edda' : '#fff3cd' %>; 
+                       color: <%= task.completed? ? '#155724' : '#856404' %>;">
+            <%= task.human_attribute_enum(:status) %>
+          </span>
+          
+          <!-- 詳細表示 -->
+          <%= link_to "詳細", task_path(task), 
+              style: "background-color: #17a2b8; color: white; padding: 8px 16px; border-radius: 3px; text-decoration: none; display: inline-block; margin-left: 10px;" %>
+          
+          <!-- 編集 -->
+          <%= link_to "編集", edit_task_path(task), 
+              style: "background-color: #28a745; color: white; padding: 8px 16px; border-radius: 3px; text-decoration: none; display: inline-block; margin-left: 5px;" %>
+          
+          <!-- 削除 -->
+          <%= link_to "削除", task_path(task), 
+              data: { 
+                "turbo-method": "delete",
+                "turbo-confirm": "本当に削除しますか？"
+              },
+              style: "background-color: #dc3545; color: white; padding: 8px 16px; border-radius: 3px; text-decoration: none; display: inline-block; margin-left: 5px;" %>
+        </div>
+      </div>
+    <% end %>
+  <% else %>
+    <div style="text-align: center; padding: 50px; color: #666;">
+      <h3>📝 まだタスクがありません</h3>
+      <p>上のボタンから最初のタスクを追加してみましょう！</p>
+    </div>
+  <% end %>
+  
+  <hr style="margin: 30px 0;">
+  <p style="text-align: center; color: #666;">
+    <small>Todo App - 簡単なタスク管理アプリ</small>
+  </p>

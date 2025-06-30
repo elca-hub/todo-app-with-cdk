@@ -6,9 +6,46 @@ if [ -z "${LD_PRELOAD+x}" ]; then
     export LD_PRELOAD
 fi
 
+# Validate required environment variables for production
+if [ "$RAILS_ENV" = "production" ]; then
+    echo "Validating production environment variables..."
+
+    required_vars=("DB_HOST" "DB_NAME" "DB_USERNAME" "APP_DATABASE_PASSWORD")
+    missing_vars=()
+
+    for var in "${required_vars[@]}"; do
+        if [ -z "${!var}" ]; then
+            missing_vars+=("$var")
+        else
+            # Log non-sensitive variables for debugging
+            if [ "$var" != "APP_DATABASE_PASSWORD" ]; then
+                echo "$var=${!var}"
+            else
+                echo "$var=[REDACTED]"
+            fi
+        fi
+    done
+
+    if [ ${#missing_vars[@]} -ne 0 ]; then
+        echo "ERROR: Missing required environment variables: ${missing_vars[*]}" >&2
+        exit 1
+    fi
+
+    # Validate database.yml syntax
+    echo "Validating database.yml syntax..."
+    if ! ruby -e "require 'yaml'; require 'erb'; YAML.load(ERB.new(File.read('config/database.yml')).result, aliases: true)" > /dev/null 2>&1; then
+        echo "ERROR: database.yml has invalid YAML syntax or ERB processing failed" >&2
+        exit 1
+    fi
+    echo "Database configuration validation passed."
+
+    echo "Running rails db:prepare..."
+    ./bin/rails db:prepare
+fi
+
 # If running the rails server then create or migrate existing database
 if [ "${@: -2:1}" == "./bin/rails" ] && [ "${@: -1:1}" == "server" ]; then
-  ./bin/rails db:prepare
+    ./bin/rails db:prepare
 fi
 
 exec "${@}"

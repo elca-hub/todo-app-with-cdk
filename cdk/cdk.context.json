@@ -1,0 +1,11 @@
+{
+  "availability-zones:account=658381509424:region=ap-northeast-1": [
+    "ap-northeast-1a",
+    "ap-northeast-1c",
+    "ap-northeast-1d"
+  ],
+  "hosted-zone:account=658381509424:domainName=elca-web.com:region=ap-northeast-1": {
+    "Id": "/hostedzone/Z019661736WA0DYS4UGFT",
+    "Name": "elca-web.com."
+  }
+}

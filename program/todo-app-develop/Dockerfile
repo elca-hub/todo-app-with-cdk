@@ -16,13 +16,15 @@ WORKDIR /rails
 
 # Install base packages
 RUN apt-get update -qq && \
-    apt-get install --no-install-recommends -y curl default-mysql-client libjemalloc2 libvips && \
+    apt-get install --no-install-recommends -y curl default-mysql-client && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
-# Set development environment
-ENV RAILS_ENV="development" \
+# Set production environment
+ENV RAILS_ENV="production" \
     BUNDLE_DEPLOYMENT="1" \
-    BUNDLE_PATH="/usr/local/bundle"
+    BUNDLE_PATH="/usr/local/bundle" \
+    LANG="C.UTF-8" \
+    LC_ALL="C.UTF-8"
 
 ENV PATH=$PATH:/rails/bin
 
@@ -31,7 +33,7 @@ FROM base AS build
 
 # Install packages needed to build gems
 RUN apt-get update -qq && \
-    apt-get install --no-install-recommends -y build-essential default-libmysqlclient-dev git libyaml-dev pkg-config && \
+    apt-get install --no-install-recommends -y build-essential default-libmysqlclient-dev git pkg-config && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
 # Install application gems
@@ -56,9 +58,15 @@ FROM base
 COPY --from=build "${BUNDLE_PATH}" "${BUNDLE_PATH}"
 COPY --from=build /rails /rails
 
+# Ensure entrypoint script has correct permissions
+RUN chmod +x /rails/bin/docker-entrypoint
+
 # Entrypoint prepares the database.
 ENTRYPOINT ["/rails/bin/docker-entrypoint"]
 
+# Add healthcheck endpoint
+RUN echo '#!/bin/bash\ncurl -f http://localhost:3000/health > /dev/null 2>&1 || exit 1' > /rails/bin/healthcheck && chmod +x /rails/bin/healthcheck
+
 # Start server via Thruster by default, this can be overwritten at runtime
 EXPOSE 3000
-CMD ["./bin/thrust", "./bin/rails", "server", "-b", "0.0.0.0"]
+CMD ["./bin/rails", "server", "-b", "0.0.0.0"]

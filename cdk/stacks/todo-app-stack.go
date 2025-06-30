@@ -2,7 +2,6 @@ package stacks
 
 import (
 	"cdk/constructs"
-	"fmt"
 	"os"
 
 	"github.com/aws/aws-cdk-go/awscdk/v2"
@@ -73,8 +72,6 @@ func NewTodoAppStack(scope constructs_lib.Construct, id string, props *TodoAppSt
 	})
 
 	railsMasterKey := getEnvOrDefault("RAILS_MASTER_KEY", "")
-
-	fmt.Println("RAILS_MASTER_KEY", railsMasterKey)
 
 	// 最初にContainer Service（証明書なし）を作成
 	containerService := constructs.NewContainerService(stack, "ContainerService", &constructs.ContainerServiceProps{

@@ -36,9 +36,10 @@ func NewBaseInfrastructure(scope constructs.Construct, id string, props *BaseInf
 		MaxAzs: jsii.Number(2),
 		SubnetConfiguration: &[]*awsec2.SubnetConfiguration{
 			{
-				Name:       jsii.String("PublicSubnet"),
-				SubnetType: awsec2.SubnetType_PUBLIC,
-				CidrMask:   jsii.Number(24),
+				Name:                jsii.String("PublicSubnet"),
+				SubnetType:          awsec2.SubnetType_PUBLIC,
+				CidrMask:            jsii.Number(24),
+				MapPublicIpOnLaunch: jsii.Bool(false), // Elastic IP料金節約ですわー！
 			},
 			{
 				Name:       jsii.String("PrivateSubnet"),
@@ -46,8 +47,6 @@ func NewBaseInfrastructure(scope constructs.Construct, id string, props *BaseInf
 				CidrMask:   jsii.Number(24),
 			},
 		},
-		EnableDnsHostnames: jsii.Bool(true),
-		EnableDnsSupport:   jsii.Bool(true),
 	})
 
 	// Security Group for ALB

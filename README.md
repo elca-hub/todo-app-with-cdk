@@ -73,7 +73,7 @@ aws route53 list-hosted-zones --query 'HostedZones[?Name==`elca-web.com.`]'
 
 ```bash
 # 開発環境（デフォルト）
-CDK_DEFAULT_REGION=ap-northeast-1 cdk deploy
+RAILS_MASTER_KEY=[master.key] CDK_DEFAULT_REGION=ap-northeast-1 cdk deploy
 
 # 本番環境
 ENVIRONMENT=production CDK_DEFAULT_REGION=ap-northeast-1 cdk deploy

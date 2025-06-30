@@ -204,7 +204,7 @@ func NewContainerService(scope constructs.Construct, id string, props *Container
 
 	// Auto Scaling (optional, for cost optimization)
 	scaling := this.ECSService.AutoScaleTaskCount(&awsapplicationautoscaling.EnableScalingProps{
-		MinCapacity: jsii.Number(1),
+		MinCapacity: jsii.Number(2),
 		MaxCapacity: jsii.Number(3),
 	})
 

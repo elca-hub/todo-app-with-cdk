@@ -47,7 +47,6 @@ func NewBaseInfrastructure(scope constructs.Construct, id string, props *BaseInf
 				CidrMask:   jsii.Number(24),
 			},
 		},
-		NatGateways: jsii.Number(1), // コスト節約ですわー！
 	})
 
 	// Security Group for ALB

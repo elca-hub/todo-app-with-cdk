@@ -39,6 +39,7 @@ func NewCDNInfrastructure(scope constructs.Construct, id string, props *BaseInfr
 		DefaultBehavior: &awscloudfront.BehaviorOptions{
 			Origin: awscloudfrontorigins.NewS3StaticWebsiteOrigin(this.Bucket, nil),
 		},
+		PriceClass: awscloudfront.PriceClass_PRICE_CLASS_200,
 	})
 
 	awscdk.NewCfnOutput(this.Construct, jsii.String("DistributionId"), &awscdk.CfnOutputProps{

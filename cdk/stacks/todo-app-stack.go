@@ -16,6 +16,7 @@ type TodoAppStackProps struct {
 	AppName          string
 	ParentDomainName string // elca-web.com
 	SubdomainName    string // todo-app.kit.elca-web.com
+	RailsMasterKey   string
 }
 
 type TodoAppStack struct {
@@ -71,8 +72,6 @@ func NewTodoAppStack(scope constructs_lib.Construct, id string, props *TodoAppSt
 		DatabaseUsername: "app",
 	})
 
-	railsMasterKey := getEnvOrDefault("RAILS_MASTER_KEY", "")
-
 	// 最初にContainer Service（証明書なし）を作成
 	containerService := constructs.NewContainerService(stack, "ContainerService", &constructs.ContainerServiceProps{
 		VPC:               baseInfra.VPC,
@@ -87,7 +86,7 @@ func NewTodoAppStack(scope constructs_lib.Construct, id string, props *TodoAppSt
 		AppName:           appName,
 		Certificate:       nil, // 後で更新
 		DomainName:        subdomainName,
-		RailsMasterKey:    railsMasterKey,
+		RailsMasterKey:    props.RailsMasterKey,
 	})
 
 	// DNS と証明書の設定

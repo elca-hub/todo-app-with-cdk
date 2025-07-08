@@ -6,10 +6,13 @@ import (
 
 	"github.com/aws/aws-cdk-go/awscdk/v2"
 	"github.com/aws/jsii-runtime-go"
+	"github.com/joho/godotenv"
 )
 
 func main() {
 	defer jsii.Close()
+
+	godotenv.Load()
 
 	app := awscdk.NewApp(nil)
 
@@ -34,6 +37,7 @@ func main() {
 		AppName:          appName,
 		ParentDomainName: parentDomainName,
 		SubdomainName:    subdomainName,
+		RailsMasterKey:   getEnvOrDefault("RAILS_MASTER_KEY", ""),
 	})
 
 	app.Synth(nil)
